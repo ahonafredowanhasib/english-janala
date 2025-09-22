@@ -4,13 +4,24 @@ const loadLessons =()=>{
     .then(res=>res.json())
     .then(json => displayLessons(json.data))
 }
-
+const removeActive =()=>{
+    const lessonButtons = document.querySelectorAll(".lesson-btn")
+    // console.log(lessonButtons)
+    lessonButtons.forEach((btn)=>btn.classList.remove("active"))
+}
 const loadLevelWord= (id)=>{
     
     const url=`https://openapi.programming-hero.com/api/level/${id}`
     fetch(url)
     .then(res=>res.json())
-    .then(data=>displaylevelWords(data.data))
+    .then(data=>{
+        removeActive()
+        const clickBtn = document.getElementById(`lesson-btn-${id}`)
+        // console.log(clickBtn)
+        
+    clickBtn.classList.add("active")
+    displaylevelWords(data.data)
+    })
 
 }
 
@@ -43,7 +54,7 @@ const displaylevelWords =(words)=>{
         console.log(word)
         const card = document.createElement("div")
         card.innerHTML=`
-        <div class="bg-white rounded-xl shadow-sm text-center py-14 px-10 ">
+        <div class="bg-white rounded-xl shadow-sm text-center py-14 px-10 h-full md:bg-white">
             <h2 class="font-bold text-2xl">${word.word ? word.word:"শব্দ পাওয়া যায় নি"}</h2>
             <p class="font-semibold mt-[10px]">Meaning /Pronounciation</p>
             <div class="font-bangla font-bold text-[#18181B] text-xl mt-[10px]">"${word.meaning?word.meaning:"অর্থ পাওয়া যায় নি"} / ${word.pronunciation? word.pronunciation:"Pronunciation পাওয়া যায় নি"}"</div>
@@ -68,7 +79,7 @@ for(let lesson of lessons){
     // 3. create element
 const btnDiv = document.createElement("div")
 btnDiv.innerHTML=`
-    <button onclick="loadLevelWord(${lesson.level_no})" class="btn btn-outline btn-primary"><i class="fa-solid fa-book-open"></i>Lesson - ${lesson.level_no}</button>
+    <button id="lesson-btn-${lesson.level_no}" onclick="loadLevelWord(${lesson.level_no})" class="btn btn-outline btn-primary lesson-btn"><i class="fa-solid fa-book-open"></i>Lesson - ${lesson.level_no}</button>
 `
 // 4. append into container
 levelContainer.append(btnDiv)
